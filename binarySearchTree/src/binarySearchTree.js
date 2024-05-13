@@ -56,9 +56,32 @@ export default class BinarySearchTree{
     }
 
     //先序遍历所有节点
-    preOrderTraverse(){}
+    preOrderTraverse(callback){
+        this.preOrderTraverse(this.root,callback)
+    }
+
+    preOrderTraverseNode(node,callback){
+        if(node != null){
+            //由于先序遍历是先访问根节点，所以我们进入if条件判断之后，直接打印节点值。
+            callback(node.key);
+            this.preOrderTraverseNode(node.left,callback);
+            this.preOrderTraverseNode(node.right,callback);
+        }
+    }
+
     //后序遍历所有节点
-    postOrderTraverse(){}
+    postOrderTraverse(callback){
+        this.postOrderTraverseNode(this.root,callback);
+    }
+
+    postOrderTraverseNode(node,callback){
+        if(node != null){
+            this.postOrderTraverseNode(node.left,callback);
+            this.postOrderTraverseNode(node.right,callback);
+            //后续遍历我们只需要最后打印根节点即可。
+            callback(node.key);
+        }
+    }
     //返回树中的最小值/键
     min(){}
     //返回树中的最大值/键
