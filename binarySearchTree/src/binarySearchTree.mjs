@@ -131,5 +131,50 @@ export default class BinarySearchTree {
         }
     }
     //从树中移除某个键
-    remove(key) {}
+    remove(key) {
+        this.root = this.removeNode(this.root,key);
+    }
+
+    removeNode(node,key){
+        //如果是空节点，我们就不用找了，因为要么是空树，要么就是没找到。
+        if(node == null){
+            return null;
+        }//如果要删除的节点的key值小于根节点，我们就去树的左侧去找这个节点
+        if(this.compareFn(key,node.key) === Compare.LESS_THAN){
+            //递归的调用本方法，将左侧的节点和key传入。
+            node.left = this.removeNode(node.left,key);
+            //递归的调用，就说明如果上面递归调用的函数不走完或者说没有return值的话，最终是不会走到这里的。
+            return node;
+        }else if(this.compareFn(key,node.key) === Compare.BIGGER_THAN){
+            node.right = this.removeNode(node.right,key);
+            return node;
+        }else{
+            //如果上面的条件都不满足了，说明我们已经找到要删除的节点。也就是key等于node.key
+            //此时我们来完成删除操作
+            //我们先来处理如果要删除的节点是一个叶子节点（叶子节点就是它没有任何的子节点），这种情况最好处理。
+            if(node.left == null && node.right == null){
+                //将找到的节点置空就行了
+                node = null;
+                //停止递归
+                return node;
+            }
+            //当我们找的节点只有一侧有节点的话
+            if(node.left == null){
+                //将node的指针指向它的右侧子节点，原来的那个node对象在内存也就没有了指针引用它，所以它会被v8的垃圾回收机制给回收。
+                node = node.right;
+                return node;
+            }else if(node.right == null){
+                node = node.left;
+                return node;
+            }
+            //要删除的节点两侧都有节点
+            //找到要删除节点右侧子树的最小值
+            const tempAux = this.minNode(node.right);
+            node.key = tempAux.key;
+            node.right = this.removeNode(node.right,tempAux.key);
+            return node;
+        }
+    }
+
+
 }
